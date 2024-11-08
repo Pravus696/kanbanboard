@@ -3,25 +3,37 @@ import { User } from '../models/user.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
+// Secret key for JWT
+const secretKey = process.env.JWT_SECRET_KEY || 'secret';
+
 export const login = async (req: Request, res: Response): Promise<Response> => {
   // TODO: If the user exists and the password is correct, return a JWT token
+  console.log(req.body);
   const { username, password } = req.body;
 
   try {
+    // Check if the user exists
     const user = await User.findOne({ where: { username } });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid username or password' });
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid username or password' });
+    // Check if the password is correct
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(400).json({ message: 'Invalid password' });
     }
 
-    const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
-    return res.json({ token });
+    // Create a JWT token
+    const token = jwt.sign({ user: user}, secretKey, { expiresIn: '1h' });
+
+    return res.json({
+      message: 'Login successful',
+      token, // send the token back to client
+      user: username,
+    });
   } catch (error) {
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: 'Internal server error', error });
   }
 };
 
