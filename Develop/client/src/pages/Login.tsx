@@ -1,12 +1,12 @@
 import { useState, FormEvent, ChangeEvent } from "react";
-
+import axios from "axios";
 import Auth from '../utils/auth';
-import { login } from "../api/authAPI";
+// import { login } from "../api/authAPI";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({
     username: '',
-    password: ''
+    password: '',
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -20,8 +20,9 @@ const Login = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const data = await login(loginData);
-      Auth.login(data.token);
+
+      const response = await axios.post('/api/auth/login', loginData);
+      Auth.login(response.data.token);
     } catch (err) {
       console.error('Failed to login', err);
     }
