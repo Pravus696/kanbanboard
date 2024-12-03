@@ -8,9 +8,6 @@ interface JwtPayload {
   username: string;
 }
 
-// Define the secret key for the JWT token
-const secretkey = process.env.JWT_SECRET_KEY || ` `;
-
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   // TODO: verify the token exists and add the user data to the request object
   // get the authorization header from the request
@@ -19,6 +16,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   if (authHeader) {
     // get the token from the authorization header
     const token = authHeader.split(' ')[1];
+    const secretkey = process.env.JWT_SECRET || '';
     // verify the token
     jwt.verify(token, secretkey, (err, user) => {
       if (err) {
