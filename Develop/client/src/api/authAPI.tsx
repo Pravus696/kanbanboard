@@ -1,46 +1,28 @@
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { UserLogin } from "../interfaces/UserLogin";
+import axios from 'axios';
 
-const login = async (userInfo: UserLogin) => {
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
-  // TODO: make a POST request to the login route
-
-  // if the user exists and the password is correct, return a JWT token
+const login = async (userInfo: UserLogin): Promise<any> => {
   try {
-  const response = await axios.post("/api/auth/login", userInfo);
-  console.log(response);
+    // Send a POST request to '/auth/login' with user login information in JSON format
+    const response = await axios.post('/auth/login', userInfo, {
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-  // get the token from the response
-  const token = response.data.token;
-  // if the token exists, store it in local storage
-  if (token) {
-    localStorage.setItem("token", token);
-    console.log("token", token);
-    // get the user from the response
-    const user = response.data.user;
-    console.log("user", user);
-    localStorage.setItem("user", JSON.stringify(user));
-    setError('');
-    alert("You have successfully logged in!");
-    
-    // navigate to the tickets page
-    navigate("/tickets");
-  }
-
+    // If the response is successful, return the data directly (axios handles JSON parsing)
+    return response.data;
   } catch (error: any) {
-    if (error.response && error.response.status === 401) {
-      setError('Invalid credentials');
+    // Check if the error is a server response (error.response)
+    if (error.response) {
+      // Log and throw the server-provided error message if it exists
+      const errorMessage = error.response.data.message || 'Login failed';
+      console.log('Error from server:', errorMessage);
+      throw new Error(errorMessage);
     } else {
-      setError('An error occurred. Please try again.');
+      // Handle network or other errors
+      console.log('Network or unexpected error:', error.message || 'An error occurred');
+      throw new Error('Could not connect to the server');
     }
   }
-console.log(error);
-
-}
-
-
+};
 
 export { login };
