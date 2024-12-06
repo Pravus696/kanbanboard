@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { User } from '../models/user.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+
 export const login = async (req, res) => {
     const { username, password } = req.body; // Extract username and password from request body
     // Find the user in the database by username

@@ -13,7 +13,6 @@ class AuthService {
   loggedIn() {
     // TODO: return a value that indicates if the user is logged in
     return !!this.getToken() && !this.isTokenExpired(this.getToken());
-
   }
   
   isTokenExpired(token: string) {
@@ -24,7 +23,7 @@ class AuthService {
 
   getToken(): string {
     // TODO: return the token
-    return localStorage.getItem('id_token') || '';
+    return localStorage.getItem('token') || '';
   }
 
   login(idToken: string) {
@@ -39,6 +38,7 @@ class AuthService {
     localStorage.removeItem('id_token');
     // TODO: redirect to the login page
     window.location.assign('/login');
+
   }
 }
 

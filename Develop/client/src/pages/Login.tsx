@@ -1,11 +1,12 @@
 import { useState, FormEvent, ChangeEvent } from "react";
 import Auth from '../utils/auth';
-import { login } from "../api/authAPI";
+// import { login } from "../api/authAPI";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
