@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
-
+import dotenv from 'dotenv';
+dotenv.config();
 export const authenticateToken = (req, res, next) => {
     // TODO: verify the token exists and add the user data to the request object
     const authHeader = req.headers.authorization;
